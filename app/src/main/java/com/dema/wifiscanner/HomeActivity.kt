@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.telecom.Connection
 import android.util.Log
@@ -21,13 +22,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import java.security.Permission
 
 class HomeActivity : AppCompatActivity() {
-
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
-    private lateinit var listViewWifi: ListView
     private lateinit var btnScanWifi: Button
 
     private val tag = javaClass.name
@@ -41,8 +41,6 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        listViewWifi = findViewById(R.id.list_view_wifi)
 
         btnScanWifi = findViewById(R.id.btn_scan_wifi)
         btnScanWifi.setOnClickListener { scanWifi() }
@@ -85,6 +83,21 @@ class HomeActivity : AppCompatActivity() {
                 val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
                 if (success) {
                     Log.v("Luis", "other results: ${wifiManager.scanResults}")
+
+                    val listWifiItemModel: ArrayList<WifiItemModel?> = arrayListOf()
+
+                    wifiManager.scanResults.forEach { it ->
+                        Log.v("Luis", "Result: $it")
+                        val wifiItemModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            WifiItemModel(it.wifiSsid.toString())
+                        } else {
+                            WifiItemModel(it.SSID.toString())
+                        }
+                        listWifiItemModel.add(wifiItemModel)
+                    }
+
+                    val listWifiFragment = ListWifiFragment(listWifiItemModel)
+                    replaceFragment(listWifiFragment)
                 } else {
                 }
             }
@@ -120,5 +133,9 @@ class HomeActivity : AppCompatActivity() {
                 // Permission denied. Handle the denial as needed.
             }
         }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit()
     }
 }

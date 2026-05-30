@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:backgroundTint="@color/white"
     tools:context=".HomeActivity">
 
@@ -22,14 +23,17 @@
         app:title="Lista de conexões"
         app:titleTextColor="@color/white" />
 
-    <ListView
-        android:id="@+id/list_view_wifi"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/home_fragment"
+        android:name="com.dema.wifiscanner.LoadingWifiFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:layout="@layout/fragment_loading_wifi" />
 
     <Button
         android:id="@+id/btn_scan_wifi"
