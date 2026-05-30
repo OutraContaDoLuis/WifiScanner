@@ -88,11 +88,24 @@ class HomeActivity : AppCompatActivity() {
 
                     wifiManager.scanResults.forEach { it ->
                         Log.v("Luis", "Result: $it")
+
                         val wifiItemModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             WifiItemModel(it.wifiSsid.toString())
                         } else {
                             WifiItemModel(it.SSID.toString())
                         }
+
+                        var haveAlreadyThisSsid = false
+
+                        listWifiItemModel.forEach { it ->
+                            if (it?.ssid.toString() == wifiItemModel.ssid) {
+                                haveAlreadyThisSsid = true
+                                return@forEach
+                            }
+                        }
+
+                        if (haveAlreadyThisSsid) return@forEach
+
                         listWifiItemModel.add(wifiItemModel)
                     }
 
