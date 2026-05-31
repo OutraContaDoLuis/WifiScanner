@@ -1,4 +1,4 @@
-package com.dema.wifiscanner
+package com.dema.wifiscanner.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.dema.wifiscanner.adapter.ListWifiAdapter
+import com.dema.wifiscanner.R
+import com.dema.wifiscanner.model.WifiItemModel
 
 class ListWifiFragment(listWifiItemModel: ArrayList<WifiItemModel?>) : Fragment() {
 

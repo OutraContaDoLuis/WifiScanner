@@ -1,4 +1,4 @@
-package com.dema.wifiscanner
+package com.dema.wifiscanner.model
 
 data class WifiItemModel(
     var ssid: String? = "",

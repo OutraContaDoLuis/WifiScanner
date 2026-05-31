@@ -1,10 +1,11 @@
-package com.dema.wifiscanner
+package com.dema.wifiscanner.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dema.wifiscanner.R
 
 class LoadingWifiFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {

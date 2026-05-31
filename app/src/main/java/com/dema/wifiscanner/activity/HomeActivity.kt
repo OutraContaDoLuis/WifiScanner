@@ -1,4 +1,4 @@
-package com.dema.wifiscanner
+package com.dema.wifiscanner.activity
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -6,24 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.Network
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.telecom.Connection
 import android.util.Log
 import android.widget.Button
-import android.widget.ListView
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import java.security.Permission
+import com.dema.wifiscanner.CustomDialogs
+import com.dema.wifiscanner.R
+import com.dema.wifiscanner.model.WifiItemModel
+import com.dema.wifiscanner.fragment.ListWifiFragment
 
 class HomeActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -49,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun scanWifi() {
-        CustomDialogs.loadingWifi(this)
+        CustomDialogs.Companion.loadingWifi(this)
     }
 
     private fun getConnections() {
@@ -62,7 +60,8 @@ class HomeActivity : AppCompatActivity() {
             != PackageManager.PERMISSION_GRANTED) {
             Log.v("Luis", "Sem permissão!")
             ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.CHANGE_WIFI_STATE),
                 LOCATION_PERMISSION_REQUEST_CODE)
