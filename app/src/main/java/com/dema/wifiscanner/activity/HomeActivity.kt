@@ -28,7 +28,13 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var btnScanWifi: Button
 
+    private val permissionGranted = PackageManager.PERMISSION_GRANTED
+    private val permissionAccessFineLocation = Manifest.permission.ACCESS_FINE_LOCATION
+    private val permissionAccessCoarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
+    private val permissionChangeWifiState = Manifest.permission.ACCESS_FINE_LOCATION
+
     private val tag = javaClass.name
+    private val tagWifiManager = "TagWifiManager"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,47 +58,59 @@ class HomeActivity : AppCompatActivity() {
 
     private fun getConnections() {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CHANGE_WIFI_STATE)
-            != PackageManager.PERMISSION_GRANTED) {
-            Log.v("Luis", "Sem permissão!")
+        val accessFineLocationGranted = (
+                ContextCompat.checkSelfPermission(this, permissionAccessFineLocation)
+            == permissionGranted)
+        val accessCoarseLocationGranted = (
+                ContextCompat.checkSelfPermission(this, permissionAccessCoarseLocation)
+                        == permissionGranted)
+        val changeWifiStateGranted = (
+                ContextCompat.checkSelfPermission(this, permissionChangeWifiState)
+                        == permissionGranted)
+
+        if (!accessFineLocationGranted || !accessCoarseLocationGranted || !changeWifiStateGranted) {
+            Log.v(tagWifiManager, "No permissions granted!")
             ActivityCompat.requestPermissions(this,
                 arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.CHANGE_WIFI_STATE),
+                    permissionAccessFineLocation,
+                    permissionAccessCoarseLocation,
+                    permissionChangeWifiState),
                 LOCATION_PERMISSION_REQUEST_CODE)
         }
 
-        Log.v("Luis", (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED).toString())
-        Log.v("Luis", (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED).toString())
-        Log.v("Luis", (ContextCompat.checkSelfPermission(this, Manifest.permission.CHANGE_WIFI_STATE)
-                == PackageManager.PERMISSION_GRANTED).toString())
+        Log.v(tagWifiManager, accessFineLocationGranted.toString())
+        Log.v(tagWifiManager, accessCoarseLocationGranted.toString())
+        Log.v(tagWifiManager, changeWifiStateGranted.toString())
 
         val wifiManager = this.getSystemService(WIFI_SERVICE) as WifiManager
 
         val wifiScanReceiver = object : BroadcastReceiver() {
-
             override fun onReceive(context: Context, intent: Intent) {
                 val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
                 if (success) {
-                    Log.v("Luis", "other results: ${wifiManager.scanResults}")
+                    Log.v(tagWifiManager, "other results: ${wifiManager.scanResults}")
 
                     val listWifiItemModel: ArrayList<WifiItemModel?> = arrayListOf()
 
                     wifiManager.scanResults.forEach { it ->
-                        Log.v("Luis", "Result: $it")
+                        Log.v(tagWifiManager, "Result: $it")
 
-                        val wifiItemModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            WifiItemModel(it.wifiSsid.toString())
+                        val wifiSsid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            it.wifiSsid.toString()
                         } else {
-                            WifiItemModel(it.SSID.toString())
+                            it.SSID
                         }
+
+                        val wifiConnectionPrivate = it.capabilities.contains("WPA2") ||
+                            it.capabilities.contains("WPA")
+
+                        val wifiBssid = it.BSSID
+
+                        val wifiItemModel = WifiItemModel(
+                            wifiSsid,
+                            wifiConnectionPrivate,
+                            wifiBssid
+                        )
 
                         var haveAlreadyThisSsid = false
 
@@ -120,16 +138,7 @@ class HomeActivity : AppCompatActivity() {
         this.registerReceiver(wifiScanReceiver, intentFilter)
 
         wifiManager.startScan()
-//
-//        if (success) {
-//            val results = wifiManager.scanResults
-//            Log.v("Luis", "Sucesso!")
-//            Log.v("Luis", results.toString())
-//        } else {
-//            val results = wifiManager.scanResults
-//            Log.v("Luis", "Sem sucesso!")
-//            Log.v("Luis", wifiManager.wifiState.toString())
-//        }
+
     }
 
     override fun onRequestPermissionsResult(

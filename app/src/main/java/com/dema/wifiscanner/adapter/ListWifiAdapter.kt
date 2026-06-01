@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.dema.wifiscanner.R
 import com.dema.wifiscanner.model.WifiItemModel
 
@@ -21,7 +22,34 @@ class ListWifiAdapter(context: Context, listWifiItemModel: ArrayList<WifiItemMod
         }
 
         val txtSsid = itemView.findViewById<TextView>(R.id.txt_ssid)
-        txtSsid.text = item?.ssid
+        val ssidSb = StringBuilder()
+        ssidSb.append("SSID: ")
+        ssidSb.append(item?.ssid)
+        txtSsid.text = ssidSb.toString()
+
+        val txtConnectionPrivate = itemView.findViewById<TextView>(R.id.txt_connection_private)
+        val connectionPrivateSb = StringBuilder()
+        connectionPrivateSb.append("<b>Conexão: </b>")
+        if (item?.connectionPrivate == true) {
+            connectionPrivateSb.append("Privada")
+        } else {
+            connectionPrivateSb.append("Pública")
+        }
+
+        val connectionPrivateHtml =
+            HtmlCompat.fromHtml(connectionPrivateSb.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        txtConnectionPrivate.text = connectionPrivateHtml
+
+        val txtMecAddress = itemView.findViewById<TextView>(R.id.txt_mec_address)
+        val mecAddressSb = StringBuilder()
+        mecAddressSb.append("<b>Endereço MEC: </b>")
+        mecAddressSb.append(item?.mecAddress)
+
+        val mecAddressHtml =
+            HtmlCompat.fromHtml(mecAddressSb.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        txtMecAddress.text = mecAddressHtml
 
         return itemView
     }
