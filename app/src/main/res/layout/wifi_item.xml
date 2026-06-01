@@ -38,7 +38,7 @@
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/txt_mec_address"
+                android:id="@+id/txt_mac_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />

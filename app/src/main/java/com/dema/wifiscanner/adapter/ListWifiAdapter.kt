@@ -41,10 +41,10 @@ class ListWifiAdapter(context: Context, listWifiItemModel: ArrayList<WifiItemMod
 
         txtConnectionPrivate.text = connectionPrivateHtml
 
-        val txtMecAddress = itemView.findViewById<TextView>(R.id.txt_mec_address)
+        val txtMecAddress = itemView.findViewById<TextView>(R.id.txt_mac_address)
         val mecAddressSb = StringBuilder()
-        mecAddressSb.append("<b>Endereço MEC: </b>")
-        mecAddressSb.append(item?.mecAddress)
+        mecAddressSb.append("<b>Endereço MAC: </b>")
+        mecAddressSb.append(item?.macAddress)
 
         val mecAddressHtml =
             HtmlCompat.fromHtml(mecAddressSb.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
