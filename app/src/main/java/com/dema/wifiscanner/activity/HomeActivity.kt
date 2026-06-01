@@ -105,11 +105,13 @@ class HomeActivity : AppCompatActivity() {
                             it.capabilities.contains("WPA")
 
                         val wifiBssid = it.BSSID
+                        val capabilities = it.capabilities
 
                         val wifiItemModel = WifiItemModel(
                             wifiSsid,
                             wifiConnectionPrivate,
-                            wifiBssid
+                            wifiBssid,
+                            capabilities
                         )
 
                         var haveAlreadyThisSsid = false
